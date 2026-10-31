@@ -1,0 +1,71 @@
+{
+  "format_version": 1,
+  "status": "draft",
+  "campaign_id": null,
+  "parent_campaign_id": null,
+  "question": null,
+  "program_path": "program.md",
+  "baseline_source": null,
+  "editable_paths": [],
+  "frozen_artifacts": {
+    "semantic_contract": null,
+    "candidate_grammar": null,
+    "reference": null,
+    "evaluator": null,
+    "development_corpus": null,
+    "validation_corpus": null,
+    "confirmation_corpus": null,
+    "numerical_rules": null,
+    "cost_model_or_not_applicable": null
+  },
+  "policies": {
+    "acceptance": null,
+    "measurement": null,
+    "meaningful_progress": null,
+    "behavior_descriptors": null,
+    "temporary_regression": null,
+    "permitted_pivots": null,
+    "resource_scheduling": null,
+    "retention": null
+  },
+  "portfolio": {
+    "allocation_id": null,
+    "accounting_unit": null,
+    "allocation_window": null,
+    "shares": {
+      "refinement": 0.6,
+      "alternatives": 0.25,
+      "architecture_discovery": 0.15
+    }
+  },
+  "review": {
+    "attempts_per_lineage": 10,
+    "elapsed_seconds_per_lineage": null,
+    "stagnant_reviews_before_pivot": 2
+  },
+  "limits": {
+    "attempted_trials": null,
+    "trial_wall_seconds": null,
+    "campaign_wall_seconds": null,
+    "cpu_seconds": null,
+    "gpu_seconds": null,
+    "peak_memory_bytes": null,
+    "storage_bytes": null,
+    "model_service_cost": null,
+    "currency": null
+  },
+  "workspace": {
+    "control_checkout": null,
+    "baseline_commit_or_snapshot": null,
+    "worktree_root": null,
+    "lineage_branch_prefix": null,
+    "candidate_retention": null,
+    "external_asset_manifests": [],
+    "mutable_cache_policy": null
+  },
+  "records": {
+    "durable_manifest_location": null,
+    "local_payload_root": null,
+    "durable_artifact_location": null
+  }
+}

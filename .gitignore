@@ -1,0 +1,23 @@
+# Local generated artifacts; durable manifests and reports belong in results/.
+/.artifacts/
+
+# External payloads stay local; external/sources/ contains tracked manifests.
+/external/downloads/
+/external/datasets/
+/external/binaries/
+/external/build/
+
+# Local development environments and caches.
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Native build output.
+build/
+cmake-build-*/
+
+# Workstation metadata.
+.DS_Store
