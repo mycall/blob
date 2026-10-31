@@ -1,54 +1,47 @@
 # Experiment program template
 
-Status: draft; no experiment runner or validation tool is implemented.
+Status: draft specification.
 
-Copy this directory to a named experiment under `experiments/`. Complete the
-[experiment definition](experiment.json) and the sections below using the
-[research policy](../../docs/guides/autonomous-research.md). The template is not
-permission to run an unbounded campaign.
+Copy this directory to a named experiment under `experiments/`. Complete
+[experiment.json](experiment.json) and the prompts below under the
+[research policy](../../docs/guides/autonomous-research.md).
+Record identifiers, hashes, limits, and policy references in JSON; use this file
+for explanations and commands. Link shared rules rather than copying them.
 
 ## Question and falsification
 
-REQUIRED: State one question, the alternative explanations, and the observation
-that would reject the proposed mechanism. Identify the parent campaign or decision.
+REQUIRED: State the question, competing explanations, falsifying observation,
+and parent campaign or decision.
 
 ## Scope and comparison
 
-REQUIRED: Name the editable files or parameters and explain the allowed changes.
-Record frozen artifacts and hashes in the experiment definition: semantics,
-grammar, reference, evaluator, workload splits, numerical and cost rules.
-Describe how the controller enforces scope independently of the candidate.
+REQUIRED: Explain the allowed changes and how the controller enforces the scope
+recorded in JSON. Identify any representation or evaluation change requiring a
+separate campaign.
 
 ## Baseline and candidate families
 
-REQUIRED: Identify the accepted baseline, alternative starting points, useful
-behavior descriptors, and simple search controls. Specify any bounded branch
-allowed to regress temporarily, its milestone, and its exit condition.
+REQUIRED: Explain the baseline, alternative starting points, behavior descriptors,
+simple controls, and any temporary-regression hypothesis and milestone.
 
 ## Procedure and measurements
 
-REQUIRED: Supply actual setup, build, conformance, screening, and replay commands
-once those tools exist. State session boundaries, quality/coverage requirements,
-missing-result rules, practical margins, repetitions, and uncertainty handling.
-Declare final confirmation access and the treatment of exposed confirmation cases.
+REQUIRED: Supply actual setup, build, check, run, and replay commands. Instantiate
+the [measurement requirements](../../docs/whitepapers/Reprogrammable_Blob_Research_Plan.md#11-measurement-and-acceptance-procedure)
+with task-specific thresholds and confirmation cases.
 
 ## Worktree and artifact lifecycle
 
-REQUIRED: Identify the control checkout, committed baseline or recorded source
-snapshot, branch/worktree naming, and trial source-retention method. Put results
-outside candidate worktrees. Specify external inputs, mutable cache isolation,
-resource scheduling, interruption handling, integration checks, and cleanup.
+REQUIRED: Instantiate the [worktree procedure](../../docs/guides/autonomous-research.md#worktrees-and-candidate-identity)
+with campaign-specific locations, scheduling, and input/cache arrangements.
 
 ## Budget, progress, and pivots
 
-REQUIRED: Fill all resource ceilings and policy references in the definition.
-Specify what counts as meaningful progress, how lineage history survives restarts,
-and which pivots are permitted under the parent allocation. Record any departure
-from the guide's pilot defaults before the campaign begins.
+REQUIRED: Justify limits and policy choices in JSON, define meaningful progress,
+and explain permitted pivots or departures from the guide's defaults.
 
 ## Outcomes and interpretation
 
-REQUIRED: Define promotion gates and archive categories. Specify candidate and
-result retention, including bulky artifacts, and how to reproduce comparisons.
-Keep trial history in immutable run records. Rewrite this program when its current
-procedure changes; preserve the version used by prior campaigns.
+REQUIRED: Define task-specific promotion and archive decisions, how to reproduce
+the comparison, and any retention exceptions under the
+[record policy](../../docs/guides/autonomous-research.md#records-and-retention).

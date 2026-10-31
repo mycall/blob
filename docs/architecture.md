@@ -1,31 +1,31 @@
 # Repository architecture
 
-## Current state
+This document owns directory responsibilities, dependency boundaries, and build
+conventions. See the [README](../README.md) for implementation status.
 
-This is a research monorepo scaffold. The
-[research plan](whitepapers/Reprogrammable_Blob_Research_Plan.md) describes proposed
-capabilities and experiments; no evaluators, runtimes, backends, or applications
-are implemented yet. The boundaries below guide their placement as they are built.
+## Documentation ownership
 
-## Representation baseline
+Edit the owner when a rule or decision changes; other documents should summarize
+only what their readers need and link to the details. Templates instantiate rules
+for a campaign rather than defining competing policy.
 
-Use explicit, versioned semantic state and recorded transitions as the initial
-authoritative representation. English, code, and visual interfaces express intent
-and present views; learned workspaces remain replaceable proposal and analysis
-components. This is a provisional design choice, not implemented behavior.
+| Concern | Authoritative home |
+| --- | --- |
+| Project status and entry points | [README](../README.md) |
+| Contributor rules and documentation upkeep | [AGENTS.md](../AGENTS.md) |
+| Repository layout, dependencies, and build conventions | This document |
+| Research questions, precedents, and staged milestones | [Whitepaper](whitepapers/Reprogrammable_Blob_Research_Plan.md) |
+| Measurement dimensions and acceptance methodology | [Whitepaper §11](whitepapers/Reprogrammable_Blob_Research_Plan.md#11-measurement-and-acceptance-procedure) |
+| Representation choice, projection rules, and reversal criteria | [ADR 0001](decisions/0001-semantic-state-and-projections.md) |
+| Campaign budgets, trial/worktree lifecycle, confirmation access, and run records | [Research policy](guides/autonomous-research.md) |
+| External input provenance, retrieval, and storage | [External assets](../external/README.md) |
+| A specific experiment's question, alternatives, and procedure | Its definition under `experiments/`; start with the [template](../experiments/_template/program.md) |
+| Historical observations and artifact references | Immutable run records under `results/` or their indexed archive |
 
-The [representation decision](decisions/0001-semantic-state-and-projections.md)
-owns the rationale, command/event distinction, projection requirements, replay
-boundary, and reversal criteria. Its
-[comparison experiment](../experiments/representation-comparison/README.md)
-keeps English-centered and learned alternatives open to testing.
-
-Place semantic and transition rules in `contracts/semantics/`, interchange formats
-in `contracts/schemas/`, and reference interpretations in `components/reference/`.
-The runtime owns validated changes, publication, and recovery. Applications own
-authoring and presentation; learned proposal adapters belong with discovery.
-The laboratory owns evidence and comparison. These are responsibilities within
-the existing layout, not a requirement for new services or a graph database.
+Decision records retain rationale and reversal criteria; experiment definitions
+own the tests of those decisions. As executable contracts are implemented,
+`contracts/` becomes the authority for their precise behavior and interchange
+formats; guides and proposals should link to them.
 
 ## Directory ownership
 
@@ -54,16 +54,8 @@ the existing layout, not a requirement for new services or a graph database.
 | `tools/` | Small repository development and build helpers. |
 | `.artifacts/` | Ignored local output: large traces, binaries, caches, and raw runs. |
 
-Follow the [autonomous research policy](guides/autonomous-research.md) for campaign
-scope, portfolio budgets, stagnation rules, and worktree lifecycle. The
-[experiment template](../experiments/_template/program.md) provides a draft program
-and definition; neither is an implemented runner interface. Candidate worktrees
-live under `.artifacts/worktrees/`, with run payloads outside those worktrees and
-durable evidence retained independently of their cleanup.
-
-Empty directories use `.gitkeep` so Git preserves the intended layout. Remove a
-directory's placeholder when real contents are added. Add subdirectories when an
-implementation needs them rather than reserving every possible research branch.
+Empty directories use `.gitkeep`; remove the placeholder when real contents arrive.
+Add subdirectories when needed rather than reserving every possible research branch.
 
 ## Dependency boundaries
 
@@ -94,37 +86,11 @@ responsibility and explicit consumers.
 A directory is a responsibility boundary, not a requirement for a separate
 process, service, package, or language. Split those only when needed.
 
-## Contracts and evidence
+## Contract boundaries
 
 Version behavioral semantics separately from schema versions and backend APIs.
-Reject unsupported versions explicitly. A semantic change starts a new comparison
-family; it must not silently change the meaning of an existing experiment.
-
-Keep reference correctness separate from performance baselines. Also distinguish
-CUDA used to execute a workload from CUDA used to evaluate a hypothetical machine.
-Actual backend performance, evaluator wall time, and modeled target costs require
-separate evidence fields even when they use the same hardware.
-
-An experiment definition belongs in `experiments/`; reusable inputs belong in
-`corpus/`; observations and their provenance belong in `results/`. Each run
-should identify its contracts, source, candidates, inputs, environment, numerical
-rules, random streams, and referenced artifacts. Preserve a source snapshot or
-patch for dirty-tree runs; a commit identifier alone cannot reproduce them.
-
-Keep small fixtures and manifests in Git. Store large immutable artifacts outside
-Git and identify them by content hash and a documented retrieval location.
-`.artifacts/` is local scratch storage, not a durable archive. Before relying on
-a result, preserve its required artifacts in durable storage and record how to
-retrieve and verify them. The storage provider and manifest schema remain open.
-
-Use the [external asset conventions](../external/README.md) for downloaded datasets,
-prebuilt tools, and external source builds. Run manifests should reference their
-source manifests and verified hashes, not only machine-local paths.
-
-Decision records should identify the question, alternatives, current choice,
-evidence, assumptions, and the experiment that would reverse the choice.
-Maintain the current explanation here or in the relevant guide; preserve
-superseded decisions and immutable experimental evidence through explicit links.
+Reject unsupported versions explicitly. Changes to comparison meaning follow the
+[campaign rules](guides/autonomous-research.md#bound-the-comparison-preserve-freedom-to-explore).
 
 ## Build and validation conventions
 
@@ -139,6 +105,3 @@ selectable. Pin dependencies and record the environment used for measurements.
 As implementations arrive, add fast contract and CPU replay checks to routine CI,
 cross-component conformance checks for contract changes, and explicit GPU checks
 on an admitted host. Report skipped checks separately from successful checks.
-
-Develop the first streaming-filter experiment before adding further infrastructure.
-Use its observed needs to refine these boundaries.

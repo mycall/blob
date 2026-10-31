@@ -81,11 +81,7 @@ flowchart TD
 
 Use a compact semantic core to define values, state, messages, effects, inspection, and changes. Describe frontends and backends through versioned interfaces. A Lisp, Smalltalk, visual, or new syntax can express the same initial experiments without becoming the definition of the research problem.
 
-The provisional representation baseline is explicit, versioned semantic state with recorded transitions. English, code, and graphical interfaces express intentions and present views of that state; learned workspaces can support retrieval, analogy, and proposals. Separate the representation used to reason from the state that is committed and the views used to understand it. No implementation or local comparison yet establishes this choice as superior. The [representation decision](../decisions/0001-semantic-state-and-projections.md) records its rationale, requirements, and reversal criteria.
-
-Begin with stable identities, definitions, typed relationships, state layouts, constraints, and evidence links needed by the first experiment. Preserve source intentions, ambiguity, hypotheses, and opaque artifacts where meaning has not been formalized. A graph or serialization format does not itself define semantics, and a fixed initial ontology must not become the boundary of architecture discovery. Keep authored explanations and open questions in prose; structured state does not require generating every research document.
-
-The distinction between update commands and read views borrows from CQRS; reconstructing state from recorded changes is the separate event-sourcing choice [112][ref-112], [113][ref-113]. Prototype these boundaries in a single process and store if sufficient. An English interpretation proposes a command, validation and execution determine its outcome, and a projection describes committed state. Editing a projection must start a validated change, not bypass the semantic contract.
+The provisional baseline uses explicit semantic state with English, code, and visual projections. The [representation decision](../decisions/0001-semantic-state-and-projections.md) owns its rationale, command/outcome distinction, and projection requirements. CQRS separates update and read models; event sourcing adds reconstruction from recorded changes [112][ref-112], [113][ref-113]. X17 tests whether this combination improves the live experience enough to justify its cost.
 
 | Component | Required contract |
 | --- | --- |
@@ -103,7 +99,7 @@ Treat optimized machine code and circuits as derived artifacts. The same live de
 
 Define replacement behavior before optimizing it. An edit can intentionally change program meaning; an optimization must preserve the meaning of the selected version. Compare a candidate against the reference after applying the same edit, rather than against the old program.
 
-Keep intent, proposed command, acceptance for execution, and actual transaction outcome distinct. For example, “double the history without losing samples” needs an identified buffer version, explicit old and new capacities, a migration, and a replacement boundary. Preserve available samples without claiming to reconstruct discarded history. State publication and durable outcome recording must form one recoverable logical commit; an interrupted migration cannot be represented as a completed change merely because its command was accepted.
+Frontends submit version-conditioned commands under the [representation decision](../decisions/0001-semantic-state-and-projections.md#intent-command-outcome-and-view). The transaction below determines their actual outcome.
 
 | Change class | Initial supported rule | Later experiment |
 | --- | --- | --- |
@@ -178,7 +174,7 @@ This sequence covers a stateful change to one region. Migration works on a snaps
 
 Keep three search spaces distinct: semantics, implementation, and adaptation policy. Freeze a semantic contract for a comparison run. A proposal that changes that contract starts a new experiment family with its own reference behavior.
 
-Bound the time spent inside one hypothesis without making the initial architecture permanent. Preserve evidence identities across campaigns; freeze evaluation rules within a campaign; allow new representations, semantics, and workloads through explicitly versioned campaigns with new baselines. A candidate cannot change the acceptance rules judging its own result. The repository's [autonomous research policy](../guides/autonomous-research.md) defines the operational boundaries and provisional allocation defaults; sections 15, 17, and 22 explain their research role.
+The [research policy](../guides/autonomous-research.md) bounds campaign scope and resources while allowing new comparison families. Sections 15 and 22 discuss why search needs both stable evaluation and opportunities to change its representation.
 
 | Hypothesis | Competing designs | Discriminating evidence |
 | --- | --- | --- |
@@ -593,7 +589,7 @@ Compilation is worthwhile only when expected savings over the candidate's remain
 
 A genetic algorithm is one consumer of the evaluator. It is not required to balance reprogrammability and performance. Establish enumeration, random search, and local search controls first. Compare evolutionary search for structured discrete candidates, Bayesian methods for expensive evaluations, and quality-diversity methods when preserving different architectural families matters. Use gradients only for differentiable parameters or explicit relaxations; project back to discrete candidates and revalidate.
 
-Give every search campaign a frozen evaluator, a declared editable scope, a total resource envelope, and a rule for leaving a stagnant lineage. Track proposal, build, validation, and failed-trial costs as well as CUDA evaluation. GPU throughput alone cannot justify extending a search that produces neither useful findings nor new evidence. Use the campaign and portfolio procedures in sections 15 and 22.
+Apply the [campaign policy](../guides/autonomous-research.md) to GPU search. Evaluator throughput alone cannot justify extending a search that produces neither useful findings nor new evidence.
 
 ```mermaid
 flowchart TD
@@ -786,7 +782,7 @@ For the small interactive demonstrator, start with p95 edit-to-effect under 100 
 4. Interleave candidate order and repeat complete traces with multiple seeds. Give candidates the same workload and optimization opportunity, including failed attempts and search overhead.
 5. Collect quantity, quality, coverage, editing experience, and costs together. Report paired differences and uncertainty rather than a single speed number.
 6. Investigate invalid, stale, missing, late, and discarded results before summarizing any gain.
-7. Re-run finalists on untouched scenario families and cost perturbations. Check quality and interaction regressions as well as throughput. Separate routine selection cases from final confirmation cases and record access to confirmation results. Once those results influence new proposals, the exposed cases become development evidence for that search; require a new untouched suite for a further generalization claim.
+7. Re-run finalists on untouched scenario families and cost perturbations. Check quality and interaction regressions as well as throughput. Manage selection and confirmation access under the [campaign policy](../guides/autonomous-research.md#confirmation-and-search-evaluation).
 8. Record the tradeoff, proof/test scope, assumptions, and evidence that would reverse the decision.
 
 Start with five complete repetitions per candidate and expand when variance could change the decision. Tail estimates require enough individual events; if sample counts are insufficient, report the counts and observed distribution without a confident p99 claim. Use run-level or block resampling rather than pretending correlated events are independent.
@@ -971,7 +967,7 @@ W3 first checks whether the objective measures the live experience and whether l
 
 Begin with correctness, edit-latency and memory as constraints; optimize session completion time and resource cost. Add objectives only when they change decisions. Preserve rejected candidates and their failure reasons to keep search from repeatedly rediscovering invalid designs.
 
-Periodically evaluate the search policy itself against random search, simple local search, and selected manual alternatives at matched total cost. Report useful validated findings, transfers, counterexamples, and resolved uncertainties separately. A small improvement in the current winner does not justify consuming the portfolio's reserved exploration budget.
+Use the [search-policy comparison procedure](../guides/autonomous-research.md#confirmation-and-search-evaluation) to test whether a more elaborate optimizer earns its total cost.
 
 ## 15. Evolutionary architecture search procedure
 
@@ -990,19 +986,13 @@ The first genome should describe implementation and policy choices under fixed s
 
 Generate a well-formed candidate from a typed grammar. Reject invalid interfaces and resource violations cheaply. Run differential correctness tests and any required proof checks. Freeze quality, coverage, and editing-experience requirements before comparing fitness; retain separate outcome dimensions as specified in section 11. Evaluate short traces only after their rankings have been validated. Fully evaluate survivors, retain nondominated alternatives, and test finalists on held-out traces and perturbed hardware costs. Keep each artifact and decision linked to its source genome.
 
-For an initial policy comparison, allocate 30, 100, and 300 candidate evaluations to random, local, Bayesian, and evolutionary methods, with five seeds where affordable. Also cap elapsed time, CPU/GPU time, memory, storage, and any model-service spending. Use the same corpus and account for failed builds, proposal generation, checking, and surrogate training. These are adjustable pilot budgets; expensive RTL evaluations receive a smaller, explicitly declared allocation. Trial count alone is not an equal-cost comparison, and the earliest hard limit ends further admission.
+For an initial policy comparison, allocate 30, 100, and 300 candidate evaluations to random, local, Bayesian, and evolutionary methods, with five seeds where affordable. These are adjustable pilot sizes; expensive RTL evaluations need smaller allocations. Match total costs under the [budget policy](../guides/autonomous-research.md#trial-loop-and-budget-accounting), since trial counts alone can hide unequal work.
 
 ### Bounded autonomous campaigns
 
 Autoresearch supplies a compact precedent: a narrow editable implementation, fixed evaluation, baseline-first trials, and a written agent procedure [109][ref-109], [110][ref-110]. Its training budget excludes startup and compilation. Blob must retain the full editing-session accounting in section 11, with prior preparation and research costs separately visible. This is an adaptation to test, not evidence that autonomous search already improves Blob.
 
-Define a campaign with a current `program.md` and a machine-readable experiment definition. Freeze their identities with the baseline, allowed edits, semantic contract, grammar, reference, evaluator, workload splits, numerical rules, and acceptance criteria. The [repository template](../../experiments/_template/program.md) is a draft specification; no runner or enforcement system is implemented yet. Frozen instructions remain part of historical evidence when the current procedure changes.
-
-The proposed loop is: establish the baseline; select a candidate and hypothesis from the allocated portfolio track; preserve source identity; run cheap conformance checks; screen eligible candidates; repeat promising comparisons; confirm finalists independently; record every outcome and cost; then apply budget and stagnation rules before admitting another trial. The laboratory must verify frozen artifacts, constrain writes, and measure results outside candidate-controlled reporting. Written instructions alone do not establish evaluation integrity.
-
-Keep trial outcome separate from promotion. Invalid, crashed, cancelled, interrupted, and inconclusive trials are evidence, not successful work. A temporary performance regression may continue in an isolated branch with a hypothesis, milestone, resource ceiling, and exit condition. It cannot replace the accepted implementation until the full admission requirements pass. This permits multi-step mechanisms, such as state handles that initially add overhead but later reduce migration cost, without relaxing correctness for accepted behavior.
-
-Review each lineage at declared trial and elapsed-time intervals. Meaningful progress requires a practical gain beyond noise, a useful new behavior, a reproducible counterexample, or resolution of a named uncertainty. Persistent stagnation triggers an independent restart, mechanism transfer, representation change, new comparison family, or retirement. New branch names and campaign restarts do not erase lineage costs or renew its allocation. The [research policy](../guides/autonomous-research.md#portfolio-and-stagnation-defaults) owns the pilot intervals and allocation rules; departures must be recorded before a campaign begins. Reserve enough resources for confirmation and evidence persistence, or report a candidate as unconfirmed.
+The [research policy](../guides/autonomous-research.md) owns campaign definitions, enforced evaluation boundaries, the trial loop, temporary-regression branches, and stagnation pivots. Use its [template](../../experiments/_template/program.md) to instantiate those rules. The research question is whether bounded local refinement plus independent alternatives produces better validated discoveries than repeatedly advancing a single incumbent; section 22 develops that comparison.
 
 ### Protect the search from misleading success
 
@@ -1012,7 +1002,7 @@ Review each lineage at declared trial and elapsed-time intervals. Meaningful pro
 
 - Maintain diverse finalists rather than only the best score from one simulation.
 
-- Pivot or retire an optimizer lineage when its declared review windows produce neither a meaningful gain nor useful new evidence. Preserve temporary regressions only within their explicit exploration allocation; do not repeatedly consume the final confirmation suite to decide routine continuations.
+- Apply the guide's [stagnation and pivot rules](../guides/autonomous-research.md#portfolio-and-stagnation-defaults) instead of renewing an unproductive lineage indefinitely.
 
 Thompson motivates attention to the evaluation medium [20][ref-20]. Simulation search can discover novel designs and can also exploit omissions in the simulator. Physical implementation remains a later validation stage.
 
@@ -1043,82 +1033,21 @@ Before broad source mutation, pilot the autonomous loop by varying CPU processin
 
 ## 17. Experiment records and operating routine
 
-Use the [repository architecture](../architecture.md) as the directory authority: contracts under `contracts/`; implementations under `components/`; shared workloads and traces under `corpus/`; campaign definitions under `experiments/`; decisions under `docs/decisions/`; and small result manifests under `results/`. Keep large payloads in ignored local storage or a durable external archive, with immutable hashes and documented retrieval locations. Follow the [external asset conventions](../../external/README.md) for collected datasets and downloaded or built binaries. Local ignored storage alone is not a durable archive.
+A useful research record connects a claim to the inputs, implementation, conditions, and observations that support it. Candidate outcome, archive membership, and promotion are distinct decisions. Autoresearch's local ledger and code-reset loop [110][ref-110] illustrate why preserving the current implementation and preserving experimental evidence need separate mechanisms.
 
-### Worktrees and evidence ownership
+Use the [architecture guide](../architecture.md) for directory ownership and the [research policy](../guides/autonomous-research.md) for execution procedures. In particular:
 
-Use a separate Git worktree for each active lineage that edits source. Start from an explicit baseline commit or deliberately materialize a recorded source snapshot; uncommitted and untracked files from the main checkout are not included automatically. Parameter-only trials can share immutable source with separate configurations. Worktrees isolate working files but share Git objects and host resources. They do not enforce evaluator integrity, cache isolation, or exclusive GPU access.
-
-Keep the controller, frozen evaluator, budget ledger, and evidence store outside candidate worktrees. Share hashed external inputs through explicit read-only paths where practical; isolate mutable build outputs and caches that could influence other trials. Record resource scheduling and contention. Preserve each trial's candidate commit with a durable reference or archive its complete source snapshot, including required dirty or untracked files. A discarded commit hash without a retained reference or source archive is not a retention strategy.
-
-Autoresearch records outcomes locally while resetting unsuccessful code changes [110][ref-110]. Blob should similarly keep the working implementation understandable, but retain rejected candidates and evidence independently of the chosen branch. Store small manifests or archive indexes in version control; bulky logs and binaries can remain external. Candidate outcome, archive membership, and promotion are distinct decisions.
-
-Before removing or reusing a worktree, preserve interrupted outcomes, source identity, manifests, and required artifacts. Inspect dirty and untracked files and remove the worktree without discarding the only copy of evidence. Integrate a validated patch or commit into the accepted implementation and rerun applicable checks there. The [research policy](../guides/autonomous-research.md#worktrees-and-candidate-identity) specifies paths and lifecycle; it is not implemented automation.
-
-### Minimum run record
-
-```yaml
-run_id: E003-seed17-r2
-campaign_id: E003
-campaign_definition_hash: REQUIRED
-program_hash: REQUIRED
-lineage_id: REQUIRED
-parent_candidate_ids: REQUIRED_OR_EMPTY_FOR_BASELINE
-question: Does edit-aware specialization beat hotness-only tiering?
-contract: stream_v1
-source_commit: REQUIRED
-source_snapshot_hash: REQUIRED_IF_DIRTY_OR_UNTRACKED_INPUTS
-source_retention: REQUIRED_DURABLE_REF_OR_ARCHIVE
-workspace_record: REQUIRED_FOR_SOURCE_EDITING_LINEAGE
-container_digest: REQUIRED
-environment_manifest: env-001.json
-trace_hash: REQUIRED
-candidate_hash: REQUIRED
-evidence_kind: local_measurement
-evaluator_hash: REQUIRED
-reference_hash: REQUIRED
-cost_model_hash: REQUIRED_IF_MODELED
-logical_trial_ids: trials.json
-numerical_contract: REQUIRED
-objective_manifest: objectives.json
-comparison_mode: quantity_at_fixed_quality
-work_unit: accepted_stream_sample
-quality_contract_hash: REQUIRED
-editing_contract_hash: REQUIRED
-coverage_and_missing_result_policy: REQUIRED
-assurance_policy_hash: REQUIRED
-proof_manifest: OPTIONAL_IF_NO_PROOFS_REQUIRED
-proof_ecosystem: lean_or_rocq_or_other_or_none
-timing_scope: end_to_end_including_edits
-budget_ledger: REQUIRED_CAMPAIGN_AND_PARENT_ALLOCATION
-trial_outcome: REQUIRED_COMPLETED_INVALID_CRASHED_CANCELLED_INTERRUPTED_OR_INCONCLUSIVE
-archive_decision: REQUIRED_PROMOTE_RETAIN_OR_RETIRE_WITH_REASON
-confirmation_access_record: REQUIRED_OR_NOT_APPLICABLE
-artifact_manifest: REQUIRED_HASHES_LOCATIONS_AND_RETENTION
-results:
-  quantity: quantity.json
-  quality: quality.json
-  editing_experience: experience.json
-  assurance: assurance.json
-  costs: costs.json
-  events: events.jsonl
-```
-
-### Wisdom record
-
-For every decision, save: decision ID and parent question; alternatives; source references; tested workload domain; evidence type; measurements and uncertainty; chosen branch; rejected branches and reasons; unresolved assumptions; and the experiment that would reverse the decision. Store decision edges explicitly so the graph can be rendered later. A decision may have several parents.
+- [Worktrees and candidate identity](../guides/autonomous-research.md#worktrees-and-candidate-identity) defines isolation, source retention, promotion, and cleanup.
+- [Minimum run record](../guides/autonomous-research.md#minimum-run-record) defines provenance and result fields.
+- [Records and retention](../guides/autonomous-research.md#records-and-retention) defines archive responsibilities; [external assets](../../external/README.md) defines input retrieval and reconstruction.
 
 ### Routine after each experiment
 
-Check semantic failures and required assurance evidence first. Inspect outliers, missing results, quality regressions, and host interference. Compare quantity, quality, coverage, editing experience, and costs over the full session, not only its fastest interval. Update the Pareto set and the relevant wisdom-tree node. Choose the next experiment by uncertainty reduced per expected effort. Freeze a known-good configuration before changing dependencies.
-
-Persist candidate identity and outcome even when a trial is rejected. Missing metrics remain explicitly missing with a reason; do not encode a crash as zero latency or zero error. Apply the declared retention tiers before storage fills, preserving sufficient diagnostics for confirmation and important counterexamples. Record any deletion that limits replay. Keep trial history in the evidence archive; maintain current explanations in guides, decision summaries, and this proposal without appending session logs.
+Apply the measurement and acceptance procedure in section 11, then update the conditional decision graph described in section 22. Inspect missing results and unresolved failures before selecting the next uncertainty to reduce. Freeze a known-good configuration before changing dependencies.
 
 ### Exit and pivot rules
 
-If the apparent gain disappears when compilation is counted, reduce specialization scope. If a candidate wins only under one cost model, narrow the claim. If no tested implementation meets the edit budget, examine the semantic contract and representation before adding a more complex optimizer. If the UI makes state or transitions less understandable, simplify the interface before extending the machine.
-
-If a lineage stagnates, apply the declared pivot rule rather than automatically granting more trials. If a hard budget is reached, finish cancellation and evidence persistence within the reserved envelope and stop admission. Continuation requires an explicit allocation under the remaining parent budget; a preauthorized controller policy may make that decision. Resource use survives process restarts, and candidates cannot authorize their own extensions.
+If the apparent gain disappears when compilation is counted, reduce specialization scope. If a candidate wins only under one cost model, narrow the claim. If no tested implementation meets the edit budget, examine the semantic contract and representation before adding a more complex optimizer. If the UI makes state or transitions less understandable, simplify the interface before extending the machine. Apply campaign limits and continuation rules from the research policy.
 
 The first milestone report should contain the platform manifest, reference contract, trace definitions, paired measurements, one live demonstration, three updated wisdom-tree nodes, and a clear next decision. It should identify what remains hypothetical and what was actually observed.
 
@@ -1130,13 +1059,18 @@ Use transformer models as nondeterministic oracles that generate proposals and e
 
 | Role | Oracle contribution | Deterministic boundary |
 | --- | --- | --- |
-| Architecture discovery | Suggest new primitives, region boundaries, state representations, or search grammars. | A typed candidate description, explicit assumptions, and a separately evaluated experiment. |
-| Implementation search | Generate or mutate code, kernels, compiler passes, and mapping policies. | Build, contract checks, resource limits, reference comparison, and held-out evaluation. |
-| Construction interface | Translate a user intention into edits to live objects and explain alternatives. | A structured change transaction with declared scope and version preconditions. |
-| Testing and diagnosis | Propose adversarial traces, invariants, and explanations of a failure. | Independent reference behavior; model-generated tests supplement existing tests. |
-| Application behavior | Provide text, design suggestions, or inference results to an application. | The exact result becomes an explicit external event that can be replayed. |
+| Research assistant | Retrieve mechanisms, sources, contradictions, and neighboring fields. | Check claims and preserve provenance; judge whether the proposal changes a research decision. |
+| Architecture discovery | Suggest primitives, representations, concurrency models, or search grammars. | A typed candidate, explicit assumptions, reference interpretation, and separately evaluated experiment. |
+| Implementation search | Generate code, kernels, compiler passes, mappings, or candidate mutations. | Independent build, contract, resource, and held-out checks. |
+| Construction interface | Translate intent into edits and explain alternatives. | Preserve ambiguity; validate a structured transaction with scope and version preconditions. |
+| Learned cost model | Rank expensive evaluations or predict stability. | Freeze the model and inputs for a trial; measure calibration errors and retain exploration outside its ranking. |
+| Testing and diagnosis | Propose adversarial traces, faults, invariants, and explanations. | Validate task meaning and reference behavior independently; generated tests supplement tests the generator cannot edit. |
+| Proof proposer | Suggest lemmas, migration proofs, or rewrite certificates. | A separate checker verifies the statement; review whether it captures the intended requirement. |
+| Application behavior | Supply inference results to an application. | Preserve the exact result as an external event for replay. |
 
 FunSearch pairs language-model proposals with systematic evaluation; AlphaEvolve extends this pattern to broader algorithm discovery [31][ref-31], [32][ref-32]. Borrow that separation without assuming their reported results transfer to this blob. A model can also guide a genetic algorithm by proposing mutations, but it need not replace random variation or local search.
+
+A learned component placed inside the strict execution path must meet that path's reproducibility contract. A component outside it may be nondeterministic if its outputs enter through the recorded event boundary. Classify by role and contract, rather than assuming every transformer must be either the whole controller or merely a chat interface.
 
 ### Experiments for the existing machine
 
@@ -1150,13 +1084,13 @@ The N1X GPU is shared with CUDA experiments. Pre-generate and record oracle resp
 
 Anthropic's J-space research identifies internal representations through their potential for verbal report and studies their role in reasoning and reuse across computations. The lens depends on model activations and vocabulary; the paper does not establish a portable, complete application-state representation [111][ref-111]. Use its shared-workspace mechanism as inspiration for a separately evaluated research component, not as evidence that latent coordinates should replace Blob's durable semantic records.
 
-A learned workspace may retrieve related mechanisms, connect hypotheses, or interpret intentions into explicit proposals. Record the model, encoder or lens, configuration, relevant artifact identities, and actual outputs used in decisions. Preserve latent artifacts when the claim requires them; ordinary embeddings do not establish J-space behavior. Changing a model must not silently change the interpretation of old state. Compare English-centered records, explicit semantic state with projections, and state augmented by a learned workspace under X17 before expanding the baseline commitment.
+A learned workspace may retrieve mechanisms, connect hypotheses, or interpret intentions into proposals. The [representation decision](../decisions/0001-semantic-state-and-projections.md#projection-and-learned-workspace-requirements) owns artifact identity and model-replacement requirements. X17's [experiment outline](../../experiments/representation-comparison/README.md) tests the benefit against English-centered and explicit-state alternatives.
 
 ## 19. Determinism and oracle replay
 
 The target guarantee is deterministic logical execution: the same initial state, semantics, committed implementation versions, and ordered external-event log produce the same logical outputs and state. This does not imply identical wall-clock timing. Numerical reproducibility requires its own explicit scope.
 
-For representation replay, preserve the initial checkpoint, committed transitions, required observations, and original interpretation rules. Replay the recorded commands and outcomes rather than translating the English intent again. Read views must identify their source state version; stale edits need version checks and revalidation. Free-form explanations may be lossy or nondeterministic, so distinguish logical replay from byte-identical prose regeneration and preserve exact text when it influenced a decision. A faithful replay of recorded model outputs does not prove that the model's internal reasoning is reproducible.
+For the additional guarantees needed when authoring through projections, follow the [representation decision](../decisions/0001-semantic-state-and-projections.md#projection-and-learned-workspace-requirements). The procedure below governs oracle admission and logical replay regardless of frontend.
 
 ### Procedure for admitting an oracle response
 
@@ -1298,7 +1232,7 @@ These experiments combine mechanisms from the atlas. They are not claims that th
 | X14 — Does preserving diversity uncover better architectures? | Scalar fitness; Pareto archive; MAP-Elites; bounded novelty pool. | Keep the same evaluation budget and compare behavior coverage, useful transfers, and held-out session performance. Freeze descriptors for each comparison, then evaluate descriptor revisions separately. |
 | X15 — Can generated workloads expose blind spots? | Handwritten traces; property-based traces; oracle-generated traces; POET-inspired task/solution coevolution. | Preserve an untouched external suite. Reject meaningless tasks; keep minimal counterexamples. Compare whether new traces expose failures that ordinary optimization misses. |
 | X16 — Which transformer role earns its cost? | No model; proposal generator; cost surrogate; test generator; proof proposer; natural-language construction interface. | Run separate ablations. Count inference, retrieval, evaluation, GPU interference, and review effort. Test frozen proposal batches first so architecture comparisons remain replayable. |
-| X17 — Should English be a view over explicit semantic state? | English-centered records; explicit semantic state with English/visual views; the same state augmented by a replaceable learned workspace. | Use common edit tasks and independent reference behavior. Measure interpretation errors, ambiguity preservation, stale-view handling, replay without new model calls, explanation traceability, model replacement, and representation-extension cost. Assess understanding through paired human tasks. The [experiment outline](../../experiments/representation-comparison/README.md) defines the comparison; no variant has local results yet. |
+| X17 — Should English be a view over explicit semantic state? | Compare English-centered, explicit-state, and learned-workspace approaches. | The [experiment definition](../../experiments/representation-comparison/README.md) owns the tasks, measurements, and decision criteria. |
 
 ### Choose a few tracks, not the whole table at once
 
@@ -1306,7 +1240,7 @@ Keep the initial visual pipeline as the integration demonstrator. Alongside it, 
 
 A useful first set is X04 for incremental repair, X07 for inspectable optimization, and X09 for replacement granularity. X02 or X03 should run early if constructionist interaction is the main value proposition. X05 and X13 establish the determinism contract before autonomous search is allowed to commit changes.
 
-Use X17 to challenge the representation baseline after the streaming-filter reference and edit protocol work. Compare the English-centered and explicit-state variants before adding a learned workspace. Keep their observable task requirements fixed, account for each variant's interpretation and execution bridge, and expose concepts the initial schema cannot express. The experiment must be able to reverse the provisional choice rather than assume its superiority.
+Run X17 after the streaming-filter reference and edit protocol work. Its comparison must be able to reverse the provisional representation choice.
 
 These are starting priorities to revise, not claims that those branches will win. The atlas deliberately contains candidates that challenge the initial object/region/controller architecture.
 
@@ -1315,6 +1249,8 @@ These are starting priorities to revise, not claims that those branches will win
 ### Use a graph of conditional claims
 
 A decision can depend on several earlier findings, and a counterexample can affect several decisions. Store a graph rather than forcing all reasoning into a single tree. A readable wisdom tree is a selected view of that graph for a particular question.
+
+Each decision records its ID and parent questions, alternatives, source references, tested workload domain, evidence type, measurements and uncertainty, chosen and rejected branches with reasons, unresolved assumptions, and the experiment that would reverse it. Store parent edges explicitly; a decision may have several parents.
 
 ```yaml
 decision_id: W-region-004
@@ -1349,11 +1285,11 @@ Correctness, required assurance, and declared resource limits are admission cond
 
 MAP-Elites, novelty search, and POET supply different mechanisms for exploring beyond one objective or fixed task set; their primary sources and proposed experiments appear in the atlas. MAP-Elites motivates retaining distinct useful behaviors; POET motivates transferring stepping stones between challenges [80][ref-80], [82][ref-82]. They should be compared with simpler controls. A genetic algorithm is one candidate generator, not a prerequisite for a reprogrammable blob. None of these precedents guarantees escape from local optima in this project.
 
-Reserve separate portfolio allocations for refinement, alternative mechanisms, and architecture discovery. The [research policy](../guides/autonomous-research.md#portfolio-and-stagnation-defaults) is the authority for provisional shares and review defaults. Account by a declared resource-cost measure, including failed builds, proposal generation, checking, and confirmation; trial count alone can hide unequal costs. Keep all resource dimensions visible and independently bounded. Do not silently divert exploration to the incumbent because it continues producing small gains.
+The [portfolio policy](../guides/autonomous-research.md#portfolio-and-stagnation-defaults) reserves refinement, alternative-mechanism, and architecture-discovery effort. The purpose is to preserve opportunities that incremental wins from the incumbent would otherwise crowd out.
 
-Preserve several independently useful lineages and periodically test transfers between them. Sibling variations of the same winner do not establish broad coverage. Freeze behavior descriptors within a comparison and investigate their blind spots in separate campaigns. A descriptor map can exclude important behaviors just as a scalar objective can. Permit bounded multi-step explorations with temporary regressions, while keeping invalid candidates out of the accepted runtime.
+Test transfers between independently useful lineages. A descriptor map can exclude important behaviors just as a scalar objective can; investigate its blind spots rather than treating archive coverage as proof of usefulness.
 
-Separate evidence of a performance gain from evidence that a question was resolved. A counterexample or failed hypothesis may justify a pivot without improving the incumbent. Record why the next allocation changes mechanism, starting point, workload family, or representation; renaming a stagnant branch is not a new search strategy. Generated workloads must remain connected to useful behavior and supplement untouched confirmation cases. New workloads or acceptance rules require versioned comparisons with rerun baselines.
+A counterexample or failed hypothesis may resolve an uncertainty without improving the incumbent. Evaluate that research value separately from performance gains. Generated workloads must remain connected to user needs; changing the question is useful only when the new comparison is explicit.
 
 ### Change the search grammar explicitly
 
@@ -1379,18 +1315,7 @@ flowchart TD
 
 The deterministic controller may itself be replaced, but each committed history must identify the controller and semantics used at each step. The nondeterministic oracle can propose a new controller; it cannot quietly change the acceptance rules for the experiment currently judging its own candidate.
 
-### Transformer roles beyond code generation
-
-| Role | What a model may contribute | Deterministic boundary and evaluation |
-| --- | --- | --- |
-| Research assistant | Candidate mechanisms, source retrieval, contradictions, missing neighboring fields. | Preserve provenance; check sources; evaluate whether the proposal changes an actual research decision. |
-| Construction partner | Translate intent, propose alternative repairs, explain live objects. | Present an explicit versioned edit; preserve ambiguity and allow direct inspection of the resulting change. |
-| Search proposal engine | New primitives, schedules, representations, or mutations. | Typed proposal plus independent checks; record exact responses and artifacts. |
-| Learned cost model | Rank expensive evaluations or predict stability. | Freeze the model for a trial, preserve its inputs, measure calibration and ranking errors, and retain an exploration path around its predictions. |
-| Counterexample generator | Adversarial edit sequences, unusual states, failure scenarios. | Deterministically validate that the generated task is meaningful; retain independent tests that the generator cannot edit. |
-| Proof or invariant proposer | Candidate invariants, lemmas, migration proofs, rewrite certificates. | A separate checker verifies the formal statement. Test that the statement actually captures the intended requirement. |
-
-A learned component placed inside the strict execution path must meet that path's reproducibility contract. A component outside it may be nondeterministic if its outputs enter through the recorded event boundary. Classify by role and contract, rather than assuming every transformer must be either the whole controller or merely a chat interface.
+Transformer contributions and their acceptance boundaries are defined in [section 18](#18-transformer-models-in-the-blob).
 
 ## 23. Expanded research atlas
 

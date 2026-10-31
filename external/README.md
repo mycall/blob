@@ -18,9 +18,9 @@ content hash in each payload's path so different versions can coexist. Very larg
 assets may live on another volume or in an artifact store; record their durable
 location in the manifest and keep machine-local path overrides out of Git.
 
-Repository-generated experiment outputs belong in `../.artifacts/`, with small
-durable run records in `../results/`. These ignored directories are local storage,
-not an archive or a backup.
+For generated experiment outputs and retention, follow the
+[run-record policy](../docs/guides/autonomous-research.md#records-and-retention).
+This document owns external inputs and their reconstruction.
 
 ## Source manifests
 

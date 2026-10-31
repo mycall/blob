@@ -40,10 +40,9 @@ portable application-state format. The shared-workspace idea motivates an
 experiment; adopting latent coordinates as the sole durable record is not yet
 justified. See the [primary paper](https://transformer-circuits.pub/2026/workspace/).
 
-Compare three alternatives: English-centered records; explicit semantic state
-with projections; and semantic state augmented by a learned workspace. The
-[representation experiment](../../experiments/representation-comparison/README.md)
-defines the proposed comparison. No local results currently favor one approach.
+The [representation experiment](../../experiments/representation-comparison/README.md)
+owns the alternatives, tasks, and measurements used to challenge this decision.
+No local comparison results are available.
 
 ## Authoritative meaning and storage
 
@@ -123,8 +122,7 @@ inspection, and provenance requirements with materially better task outcomes or
 lower total cost. Also revisit it if the explicit model persistently loses
 important intentions or prevents useful mechanisms from being expressed.
 
-Measure interpretation errors, translation loss, state/replay fidelity,
-model-replacement effort, useful discoveries, human understanding, and total
-construction and maintenance cost. Predeclare practical margins before trials.
-Representation extensions enter new versioned comparisons; the baseline is a
-testable commitment, not a restriction on what architecture discovery may propose.
+Apply these reversal criteria using the
+[comparison's measurements](../../experiments/representation-comparison/README.md#measurement-and-decision).
+Representation extensions enter new versioned comparisons; this baseline does
+not restrict what architecture discovery may propose.

@@ -2,14 +2,14 @@
 
 ## Status and scope
 
-This is the operating policy for future Blob research campaigns. The repository
-has no experiment runner, evaluator, budget monitor, or worktree automation yet.
-The [experiment template](../../experiments/_template/program.md) is a specification
-to complete before running a campaign, not an executable interface.
+This guide owns campaign operations and pilot defaults. See the
+[README](../../README.md) for implementation status and the
+[experiment template](../../experiments/_template/program.md) for draft inputs.
+A campaign freezes an instantiated copy of the applicable settings.
 
-The [whitepaper](../whitepapers/Reprogrammable_Blob_Research_Plan.md) explains the
-research hypotheses and evidence requirements. This guide owns operational rules
-and pilot defaults. A campaign freezes an instantiated copy of those settings.
+Research hypotheses and measurement methodology live in the
+[whitepaper](../whitepapers/Reprogrammable_Blob_Research_Plan.md).
+External input manifests follow [external assets](../../external/README.md).
 
 ## Bound the comparison, preserve freedom to explore
 
@@ -30,10 +30,9 @@ measurements independently of candidate-reported scores. Use read-only evaluator
 inputs and isolated execution where needed; a prompt or a Git worktree alone does
 not enforce those boundaries.
 
-Admission to the accepted implementation requires semantic, assurance, quality,
-coverage, and interaction checks. Failed candidates remain research evidence.
-Performance regressions may be explored in bounded branches; they do not replace
-the accepted baseline automatically.
+Promotion must pass the [measurement and acceptance requirements](../whitepapers/Reprogrammable_Blob_Research_Plan.md#11-measurement-and-acceptance-procedure).
+Exploration may retain failed candidates or temporary regressions without replacing
+the accepted baseline.
 
 ## Campaign definition
 
@@ -52,10 +51,9 @@ explicitly justified when inapplicable. A zero GPU or model-service budget means
 that resource is unavailable, not unlimited. Budgets and required policies cannot
 be inferred from missing values.
 
-Measure the unchanged baseline first. Specify practical improvement margins,
-uncertainty treatment, repetition rules, missing-result handling, and confirmation
-criteria before inspecting candidate scores. Prefer simpler candidates when
-outcomes are equivalent within the declared uncertainty and practical margins.
+Measure the unchanged baseline first and predeclare the experiment-specific
+thresholds required by the acceptance methodology. Prefer simpler candidates
+when outcomes are equivalent within those thresholds.
 
 ## Portfolio and stagnation defaults
 
@@ -99,25 +97,18 @@ may make that decision automatically; the candidate cannot enlarge its own budge
 
 ## Preserve alternatives and stepping stones
 
-Maintain a small portfolio of measured tradeoffs and behaviorally distinct
-candidates, not only the best scalar score. Begin with a simple archive; add
-MAP-Elites or other algorithms only when comparisons justify their complexity.
-
-Choose descriptors tied to useful behavior, such as replacement granularity,
-state-reconstruction cost, or sensitivity to edit frequency. Keep descriptor
-definitions fixed within a comparison and test whether they obscure other useful
-behaviors. Diversity coverage is not itself a claim of user value.
+Maintain distinct archive roles: accepted choices, valid alternatives,
+unvalidated stepping stones, and known failures. Record behavior descriptors
+and lineage parents so independent restarts and transfers can be evaluated.
+Use the [diversity rationale](../whitepapers/Reprogrammable_Blob_Research_Plan.md#22-wisdom-graphs-search-diversity-and-new-architectures)
+to select descriptors; the campaign definition freezes them.
 
 A temporary-regression branch needs a hypothesis, an intermediate milestone,
 a cost ceiling, and an exit condition. For example, explicit state handles may
 initially slow execution but enable cheaper migration. Preserve the stepping
 stone and test that predicted benefit before extending its budget.
 
-Archive roles must remain distinct: accepted choices, valid alternatives,
-unvalidated stepping stones, and known failures. An invalid candidate can reveal
-a useful mechanism but cannot be promoted without independent conformance checks.
-Try cross-lineage transfers and independent restarts; sibling variations of one
-winner do not constitute broad exploration.
+An invalid candidate cannot be promoted without independent conformance checks.
 
 ## Worktrees and candidate identity
 
@@ -197,17 +188,16 @@ to cancel or drain workers and persist evidence within the resource envelope.
 A restart resumes the ledger rather than resetting it. If the remaining budget
 cannot support confirmation, report a promising but unconfirmed candidate.
 
-Separate research cost from application session cost. Within the declared editing
-session count compilation, validation, migration, pauses, discarded work, and
-recovery. Report preparation and prior search costs separately when outside that
-session, including any amortization assumption.
+Apply the whitepaper's [session-cost methodology](../whitepapers/Reprogrammable_Blob_Research_Plan.md#compare-both-quantity-and-quality)
+when measuring application behavior; keep it distinct from the campaign's
+research budget.
 
 ## Confirmation and search evaluation
 
 Use development cases for rapid feedback, validation cases for repeated selection,
 and a final confirmation suite withheld from routine candidate generation.
-Interleave comparisons, repeat measurements, and test transfer across edit
-frequencies, state sizes, workloads, and cost assumptions.
+Use the whitepaper's [measurement procedure](../whitepapers/Reprogrammable_Blob_Research_Plan.md#run-procedure)
+for repetitions, ordering, and transfer checks.
 
 Record access to confirmation results. Once they influence subsequent proposals,
 treat those cases as development evidence for that search and establish a new
@@ -224,12 +214,65 @@ self-awarded scalar score. No archive or search strategy guarantees global disco
 ## Records and retention
 
 Store small immutable trial manifests under `results/<campaign>/<trial>/`, or
-keep durable external records with tracked indexes. Each record identifies the
-campaign definition, source and parents, frozen evaluator and inputs, environment,
-random streams or recorded proposals, outcome, metrics, costs, and artifact hashes
-and retrieval locations. Record trial outcome separately from the decision to
-promote, retain, or retire a candidate. Missing metrics are null with a reason,
-not zero-valued performance.
+keep durable external records with tracked indexes. Record outcome separately
+from the decision to promote, retain, or retire a candidate. Missing metrics
+are null with a reason, not zero-valued performance.
+
+### Minimum run record
+
+This proposed record lists required provenance and result dimensions; it is not
+an implemented schema. Reference external input manifests rather than duplicating
+their retrieval and build instructions.
+
+```yaml
+run_id: E003-seed17-r2
+campaign_id: E003
+campaign_definition_hash: REQUIRED
+program_hash: REQUIRED
+lineage_id: REQUIRED
+parent_candidate_ids: REQUIRED_OR_EMPTY_FOR_BASELINE
+question: Does edit-aware specialization beat hotness-only tiering?
+contract: stream_v1
+source_commit: REQUIRED
+source_snapshot_hash: REQUIRED_IF_DIRTY_OR_UNTRACKED_INPUTS
+source_retention: REQUIRED_DURABLE_REF_OR_ARCHIVE
+workspace_record: REQUIRED_FOR_SOURCE_EDITING_LINEAGE
+container_digest: REQUIRED
+environment_manifest: env-001.json
+trace_hash: REQUIRED
+candidate_hash: REQUIRED
+evidence_kind: local_measurement
+evaluator_hash: REQUIRED
+reference_hash: REQUIRED
+cost_model_hash: REQUIRED_IF_MODELED
+logical_trial_ids: trials.json
+random_stream_or_proposal_manifest: REQUIRED_OR_NOT_APPLICABLE
+numerical_contract: REQUIRED
+objective_manifest: objectives.json
+comparison_mode: quantity_at_fixed_quality
+work_unit: accepted_stream_sample
+quality_contract_hash: REQUIRED
+editing_contract_hash: REQUIRED
+coverage_and_missing_result_policy: REQUIRED
+assurance_policy_hash: REQUIRED
+proof_manifest: OPTIONAL_IF_NO_PROOFS_REQUIRED
+proof_ecosystem: lean_or_rocq_or_other_or_none
+timing_scope: end_to_end_including_edits
+budget_ledger: REQUIRED_CAMPAIGN_AND_PARENT_ALLOCATION
+trial_outcome: REQUIRED_COMPLETED_INVALID_CRASHED_CANCELLED_INTERRUPTED_OR_INCONCLUSIVE
+archive_decision: REQUIRED_PROMOTE_RETAIN_OR_RETIRE_WITH_REASON
+confirmation_access_record: REQUIRED_OR_NOT_APPLICABLE
+artifact_manifest: REQUIRED_HASHES_LOCATIONS_AND_RETENTION
+results:
+  quantity: quantity.json
+  quality: quality.json
+  editing_experience: experience.json
+  assurance: assurance.json
+  costs: costs.json
+  events: events.jsonl
+```
+
+### Retention
 
 Keep sufficient evidence for replay and diagnosis. Declare retention tiers and a
 storage ceiling before running; preserve candidate identity and outcome even when
@@ -237,29 +280,18 @@ discarding bulky intermediate traces. Retain full diagnostic artifacts for requi
 confirmation and important counterexamples. Record any deletion that limits replay.
 Local ignored directories alone are not durable storage.
 
-Keep current conclusions in maintained documentation and historical evidence in
-the archive. Update decision records with the alternatives, uncertainty, and
-reversal test; do not append trial logs to the whitepaper or `AGENTS.md`.
+Follow [AGENTS.md](../../AGENTS.md#documentation) when updating current conclusions.
+Record the evidence and reversal test in the relevant decision; keep trial logs
+in the archive.
 
 ## First pilot
 
-After the reference and conventional CPU baseline work, vary streaming-filter
-batch size under identical recorded edits. Gate promotion on state continuity,
-migration recovery, numerical agreement, and edit latency. Compare simple search
-with agent proposals under a small declared budget. Use this pilot to validate
-recording, isolation, cancellation, replay, and budget enforcement before allowing
-broader code mutation or architecture search.
+Use the whitepaper's [streaming-filter pilot](../whitepapers/Reprogrammable_Blob_Research_Plan.md#first-experiment)
+to exercise this procedure before broadening source-editing scope.
 
-## Sources and adaptation
+## Research basis
 
-[Autoresearch](https://github.com/karpathy/autoresearch) supplies a compact example
-of a narrow editable implementation, fixed evaluation, and an agent procedure.
-Its [instructions](https://github.com/karpathy/autoresearch/blob/master/program.md)
-establish a baseline and keep or discard trials. Blob adopts bounded experiments
-with durable evidence, multiple lineages, and full session-cost accounting.
-
-[MAP-Elites](https://arxiv.org/abs/1504.04909) motivates archives of distinct useful
-behaviors; [Enhanced POET](https://proceedings.mlr.press/v119/wang20l.html) motivates
-transfers across challenges. These are research precedents. The allocations,
-review intervals, worktree workflow, and admission rules above are Blob proposals,
-not performance findings established by those projects.
+The whitepaper discusses [autonomous-loop precedents](../whitepapers/Reprogrammable_Blob_Research_Plan.md#bounded-autonomous-campaigns)
+and [diversity mechanisms](../whitepapers/Reprogrammable_Blob_Research_Plan.md#separate-correctness-utility-and-novelty).
+The allocation shares, review intervals, and worktree workflow here are provisional
+Blob operating choices, not validated performance findings.
