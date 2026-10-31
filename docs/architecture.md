@@ -15,6 +15,7 @@ for a campaign rather than defining competing policy.
 | Contributor rules and documentation upkeep | [AGENTS.md](../AGENTS.md) |
 | Repository layout, dependencies, and build conventions | This document |
 | Research questions, precedents, and staged milestones | [Whitepaper](whitepapers/Reprogrammable_Blob_Research_Plan.md) |
+| Initial implementation milestones, bounded scope, and task status | [BLOB-R1 roadmap](research-roadmap.md) |
 | Measurement dimensions and acceptance methodology | [Whitepaper §11](whitepapers/Reprogrammable_Blob_Research_Plan.md#11-measurement-and-acceptance-procedure) |
 | Representation choice, projection rules, and reversal criteria | [ADR 0001](decisions/0001-semantic-state-and-projections.md) |
 | Campaign budgets, trial/worktree lifecycle, confirmation access, and run records | [Research policy](guides/autonomous-research.md) |
@@ -33,6 +34,7 @@ formats; guides and proposals should link to them.
 | --- | --- |
 | `docs/whitepapers/` | Research proposals and substantial research papers, with explicit scope and status. |
 | `docs/architecture.md` | Current repository organization and dependency rules. |
+| `docs/research-roadmap.md` | Bounded initial implementation plan, milestone gates, and task list. |
 | `docs/decisions/` | Decisions, alternatives, supporting evidence, and reversal criteria. |
 | `docs/guides/` | Procedures for development and laboratory operation. |
 | `contracts/semantics/` | Versioned behavioral specifications, including numerical and live-change rules. |

@@ -11,6 +11,8 @@ reserve responsibilities; they do not indicate implemented capabilities.
 
 - [Research plan](docs/whitepapers/Reprogrammable_Blob_Research_Plan.md): hypotheses,
   proposed experiments, and decision gates.
+- [BLOB-R1 research roadmap](docs/research-roadmap.md): zero point, readiness,
+  integrated first revision, bounded task list, and pause/resume requirements.
 - [Repository architecture](docs/architecture.md): directory ownership, dependency
   boundaries, and documentation ownership.
 - [Representation decision](docs/decisions/0001-semantic-state-and-projections.md):
@@ -23,14 +25,19 @@ reserve responsibilities; they do not indicate implemented capabilities.
 - [External assets](external/README.md): conventions for large datasets, downloads,
   and binaries kept outside Git.
 
-## First implementation target
+## Initial implementation programme
 
-Start with the CPU slice of the
-[streaming-filter experiment](docs/whitepapers/Reprogrammable_Blob_Research_Plan.md#first-experiment):
-an independent reference, a CPU backend, and replayable live edits.
+Follow the [BLOB-R1 roadmap](docs/research-roadmap.md): freeze the research zero
+point, establish experiment readiness, then build an integrated first revision.
+It connects the streaming-filter live-edit experiment with discovery experiments
+C01–C03, using an independent reference and both CPU and CUDA execution. A bounded,
+script-driven Verilator/cocotb lane checks the same filter semantics in RTL
+simulation. CPU-only work is an intermediate milestone; completing the revision
+requires both execution tracks, the RTL comparison, and reproducible evidence.
 
-Language choices and build tooling remain open. Add executable setup and test
-instructions here when the first implementation lands.
+Language choices and build tooling remain open pending a bounded toolchain spike.
+The roadmap defines pilot limits and pause/resume requirements for intermittent
+work. Add executable setup and test instructions here when implementation lands.
 
 ## License
 
